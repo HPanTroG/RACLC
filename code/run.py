@@ -26,7 +26,7 @@ torch.backends.cudnn.benchmark = False
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('-input_path', type = str, default = '/home/nguyen/hnt/tweet_interpret_sum/datasets/labeled_data/2014_Philippines_Typhoon_Hagupit_en_CF_labeled_data_final2.csv')
+    parser.add_argument('-input_path', type = str, default = '../data/labeled_data/examples.csv')
     parser.add_argument('-random_state', type = int, default = 12)
     parser.add_argument('-model_config', type = str, default = 'vinai/bertweet-base')
     parser.add_argument('-cls_hidden_size', type = int, default = 128)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('-patience', type = int, default = 3)
     parser.add_argument('-cl_temperature', type = float, default = 0.05)
     parser.add_argument('-test_size', type = int, default = 0.15)
-    parser.add_argument('-train_batch_size', type = int, default = 8)
+    parser.add_argument('-train_batch_size', type = int, default = 16)
     parser.add_argument('-test_batch_size', type = int, default = 128)
     parser.add_argument('-sep_exp_token', type = str, default = ' _sep_exp_token_ ')
     parser.add_argument('-id_col', type = str, default = 'tweet_id')
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     parser.add_argument('-full_train', type = str, default = True, 
             help = 'True: full data, False: only use the correct prediction from 1st phase for training in 2nd phase')
     
-    parser.add_argument('-mode', type = str, default = 'eval', help='train: train model, eval:evaluate with n-folds, \
+    parser.add_argument('-mode', type = str, default = 'train', help='train: train model, eval:evaluate with n-folds, \
                                 prediction: make prediction on new data')
 
     parser.add_argument('-event_type', type = str, default = 'typhoon')
@@ -114,10 +114,10 @@ if __name__ == "__main__":
 
         # preprocess exp
         data[prepro_exp] = data[args.exp_col].apply(lambda x: x.strip().replace('[SEP]', args.sep_exp_token))
-        data[prepro_exp] = data[prepro_exp].apply(lambda x: utils.preprocess_text(x, lower = True))
+        data[prepro_exp] = data[prepro_exp].apply(lambda x: utils.preprocess_text(x))
         data[prepro_exp] = data[prepro_exp].apply(lambda x: [y.strip() for y in x.split(args.sep_exp_token)])
         # preprocess text
-        data[prepro_text] = data[args.text_col].apply(lambda x: utils.preprocess_text(x, lower = True))
+        data[prepro_text] = data[args.text_col].apply(lambda x: utils.preprocess_text(x))
         
         data[prepro_label] = data[args.label_col].apply(lambda x: label_idx_map[x])
 
